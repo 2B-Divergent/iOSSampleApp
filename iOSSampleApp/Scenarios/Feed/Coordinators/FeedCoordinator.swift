@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Swinject
 import UIKit
 
 enum FeedChildCoordinator {

@@ -8,7 +8,6 @@
 
 import Foundation
 import SafariServices
-import Swinject
 import UIKit
 
 protocol AboutCoordinatorDelegate: AnyObject {

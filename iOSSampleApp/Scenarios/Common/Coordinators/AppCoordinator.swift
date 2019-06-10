@@ -8,7 +8,6 @@
 
 import Foundation
 import os.log
-import Swinject
 import UIKit
 
 enum AppChildCoordinator {

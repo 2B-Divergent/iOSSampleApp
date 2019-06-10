@@ -1,8 +1,5 @@
 $(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework
 $(SRCROOT)/Carthage/Build/iOS/RxSwift.framework
-$(SRCROOT)/Carthage/Build/iOS/Swinject.framework
-$(SRCROOT)/Carthage/Build/iOS/SwinjectStoryboard.framework
-$(SRCROOT)/Carthage/Build/iOS/SwinjectAutoregistration.framework
 $(SRCROOT)/Carthage/Build/iOS/Reusable.framework
 $(SRCROOT)/Carthage/Build/iOS/Nuke.framework
 $(SRCROOT)/Carthage/Build/iOS/RxNuke.framework

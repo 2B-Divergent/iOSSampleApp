@@ -10,7 +10,6 @@ import Foundation
 @testable import iOSSampleApp
 import Nimble
 import Quick
-import Swinject
 import XCTest
 
 class ViewControllerLeakTests: QuickSpec {
