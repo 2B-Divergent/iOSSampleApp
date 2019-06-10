@@ -17,21 +17,26 @@ import RxTest
 class FeedViewModelTests: QuickSpec {
     override func spec() {
         describe("FeedViewModel") {
-            var dataService: DataServiceMock!
+            let getFeed = Current.feed.get
+            let getSelectedSource = Current.settings.getSelectedSource
+
             beforeEach {
-                dataService = DataServiceMock()
+                Current.settings.getSelectedSource = {
+                    return RssSource(title: "Coding Journal", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
+                }
+                Current.feed.get = { _, onCompletion in
+                    onCompletion(.success([RssItem(title: "Test 1", description: nil, link: nil, pubDate: nil), RssItem(title: "Test 2", description: nil, link: nil, pubDate: nil)]))
+                }
+            }
+
+            afterEach {
+                Current.feed.get = getFeed
+                Current.settings.getSelectedSource = getSelectedSource
             }
 
             context("when initialized") {
-                var vm: FeedViewModel!
-                beforeEach {
-                    dataService.result = RssResult.success([RssItem(title: "Test 1", description: nil, link: nil, pubDate: nil), RssItem(title: "Test 2", description: nil, link: nil, pubDate: nil)])
-                    let settingsService = SettingsServiceMock()
-                    settingsService.selectedSource = RssSource(title: "Coding Journal", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
-                    vm = FeedViewModel(dataService: dataService, settingsService: settingsService)
-                }
-
                 it("should load RSS items") {
+                    let vm = FeedViewModel()
                     let feed = try! vm.feed.toBlocking().first()!
                     expect(feed.count) == 2
                 }

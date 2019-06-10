@@ -17,15 +17,21 @@ import RxTest
 class SourceSelectionViewModelTests: QuickSpec {
     override func spec() {
         describe("SourceSelectionViewModel") {
-            var vm: SourceSelectionViewModel!
-            var settingsService: SettingsServiceMock!
+            let getSelectedSource = Current.settings.getSelectedSource
+
+            afterEach {
+                Current.settings.getSelectedSource = getSelectedSource
+            }
+
             beforeEach {
-                settingsService = SettingsServiceMock()
-                vm = SourceSelectionViewModel(settingsService: settingsService)
+                Current.settings.getSelectedSource = {
+                    return nil
+                }
             }
 
             context("when intialized") {
                 it("should load default RSS sources") {
+                    let vm = SourceSelectionViewModel()
                     let sources = try! vm.sources.toBlocking().first()!
                     expect(sources.count) == 4
                     expect(sources[0].source.title) == "Coding Journal"
@@ -41,12 +47,13 @@ class SourceSelectionViewModelTests: QuickSpec {
 
             context("when initialized and a feed already selected") {
                 beforeEach {
-                    settingsService = SettingsServiceMock()
-                    settingsService.selectedSource = RssSource(title: "Coding Journal", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
-                    vm = SourceSelectionViewModel(settingsService: settingsService)
+                    Current.settings.getSelectedSource = {
+                        return RssSource(title: "Coding Journal", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
+                    }
                 }
 
                 it("should pre-select that feed") {
+                    let vm = SourceSelectionViewModel()
                     let sources = try! vm.sources.toBlocking().first()!
                     expect(sources.count) == 4
                     expect(sources[0].source.title) == "Coding Journal"
@@ -59,6 +66,7 @@ class SourceSelectionViewModelTests: QuickSpec {
 
             context("when a new source is added") {
                 it("should be available, at firts position and selected") {
+                    let vm = SourceSelectionViewModel()
                     vm.addNewSource(source: RssSource(title: "Example", url: "http://example.com", rss: "http://example.com", icon: nil))
                     let sources = try! vm.sources.toBlocking().first()!
                     expect(sources.count) == 5
@@ -73,12 +81,13 @@ class SourceSelectionViewModelTests: QuickSpec {
 
             context("when initialized and a feed already selected") {
                 beforeEach {
-                    settingsService = SettingsServiceMock()
-                    settingsService.selectedSource = RssSource(title: "Coding Journal", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
-                    vm = SourceSelectionViewModel(settingsService: settingsService)
+                    Current.settings.getSelectedSource = {
+                        return RssSource(title: "Coding Journal", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
+                    }
                 }
 
                 it("should toggle the selection") {
+                    let vm = SourceSelectionViewModel()
                     let sources = try! vm.sources.toBlocking().first()!
                     vm.toggleSource(source: sources[2])
                     expect(sources[0].isSelected.value).to(beFalse())
@@ -89,18 +98,32 @@ class SourceSelectionViewModelTests: QuickSpec {
             }
 
             context("when no source is selected") {
+                beforeEach {
+                    Current.settings.getSelectedSource = {
+                        return nil
+                    }
+                }
+
                 it("should not be saved") {
+                    let vm = SourceSelectionViewModel()
                     expect(vm.saveSelectedSource()).to(beFalse())
-                    expect(settingsService.selectedSource).to(beNil())
                 }
             }
 
             context("when source is selected") {
+                var selectedSource: RssSource?
+                beforeEach {
+                    Current.settings.setSelectedSource = { source in
+                        selectedSource = source
+                    }
+                }
+
                 it("should be saved") {
+                    let vm = SourceSelectionViewModel()
                     let sources = try! vm.sources.toBlocking().first()!
                     vm.toggleSource(source: sources[2])
                     expect(vm.saveSelectedSource()).to(beTrue())
-                    expect(settingsService.selectedSource) == sources[2].source
+                    expect(selectedSource) == sources[2].source
                 }
             }
         }

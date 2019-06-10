@@ -12,11 +12,6 @@ import UIKit
 
 protocol Coordinator: AnyObject {
     /**
-     DI container
-     */
-    var container: Container { get }
-
-    /**
      Entry point starting the coordinator
      */
     func start()

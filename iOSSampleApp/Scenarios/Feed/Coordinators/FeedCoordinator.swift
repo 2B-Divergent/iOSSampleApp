@@ -26,13 +26,11 @@ final class FeedCoordinator: NavigationCoordinator {
     // MARK: - Properties
 
     let navigationController: UINavigationController
-    let container: Container
     private var childCoordinators = [FeedChildCoordinator: Coordinator]()
 
     weak var delegate: FeedCoordinatorDelegate?
 
-    init(container: Container, navigationController: UINavigationController) {
-        self.container = container
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 
@@ -43,7 +41,7 @@ final class FeedCoordinator: NavigationCoordinator {
      */
     func start() {
         let isTransitionFromSetup = !navigationController.viewControllers.isEmpty
-        let vc = container.resolveViewController(FeedViewController.self)
+        let vc = Current.storyboards.createViewController(FeedViewController.self)
         vc.delegate = self
         vc.navigationItem.hidesBackButton = true
         navigationController.pushViewController(vc, animated: true)
@@ -70,7 +68,7 @@ final class FeedCoordinator: NavigationCoordinator {
      Shows the About screen by starting the AboutCoordinator
      */
     private func showAbout() {
-        let aboutCoordinator = AboutCoordinator(container: container, navigationController: navigationController)
+        let aboutCoordinator = AboutCoordinator(navigationController: navigationController)
         childCoordinators[.about] = aboutCoordinator
         aboutCoordinator.delegate = self
         aboutCoordinator.start()

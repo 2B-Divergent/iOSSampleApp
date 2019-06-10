@@ -24,19 +24,14 @@ final class AppCoordinator: Coordinator {
     // MARK: - Properties
 
     private let window: UIWindow
-    let container: Container
     private var childCoordinators = [AppChildCoordinator: Coordinator]()
-    private let settingsService: SettingsService
     private let navigationController: UINavigationController
 
     // MARK: - Coordinator core
 
-    init(window: UIWindow, container: Container) {
+    init(window: UIWindow) {
         self.window = window
-        self.container = container
         navigationController = UINavigationController()
-
-        settingsService = self.container.resolve(SettingsService.self)!
 
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.view.backgroundColor = UIColor.white
@@ -48,7 +43,7 @@ final class AppCoordinator: Coordinator {
      Starts the app showing either the setup flow or the feed depending on the app state
     */
     func start() {
-        if settingsService.selectedSource.isSome {
+        if Current.settings.getSelectedSource().isSome {
             os_log("Setup complete, starting dashboard", log: OSLog.lifeCycle, type: .debug)
             showFeed()
         } else {
@@ -61,7 +56,7 @@ final class AppCoordinator: Coordinator {
      Shows the feed using the FeedCoordinator
      */
     private func showFeed() {
-        let feedCoordinator = FeedCoordinator(container: container, navigationController: navigationController)
+        let feedCoordinator = FeedCoordinator(navigationController: navigationController)
         childCoordinators[.feed] = feedCoordinator
         feedCoordinator.delegate = self
         feedCoordinator.start()
@@ -71,7 +66,7 @@ final class AppCoordinator: Coordinator {
      Starts the setup flow using the SetupCoordinator
      */
     private func showSetup() {
-        let setupCoordinator = SetupCoordinator(container: container, navigationController: navigationController)
+        let setupCoordinator = SetupCoordinator(navigationController: navigationController)
         childCoordinators[.setup] = setupCoordinator
         setupCoordinator.delegate = self
         setupCoordinator.start()

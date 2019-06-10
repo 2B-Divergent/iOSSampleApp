@@ -13,7 +13,7 @@ final class LibrariesViewController: UITableViewController, AboutStoryboardLodab
 
     // MARK: - Properties
 
-    var viewModel: LibrariesViewModel!
+    private let viewModel = LibrariesViewModel()
 
     // MARK: - Fields
 

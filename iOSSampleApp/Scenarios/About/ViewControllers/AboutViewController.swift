@@ -46,7 +46,7 @@ final class AboutViewController: UITableViewController, AboutStoryboardLodable {
 
     // MARK: - Properties
 
-    var viewModel: AboutViewModel!
+    private let viewModel = AboutViewModel()
 
     weak var delegate: AboutViewControllerDelegate?
 

@@ -15,12 +15,10 @@ import XCTest
 
 class ViewControllerLeakTests: QuickSpec {
     override func spec() {
-        let container = setupDependencies()
-
         describe("AboutViewController") {
             describe("viewDidLoad") {
                 let vc = LeakTest {
-                    return container.resolveViewController(AboutViewController.self)
+                    return Current.storyboards.createViewController(AboutViewController.self)
                 }
                 it("must not leak") {
                     expect(vc).toNot(leak())
@@ -31,7 +29,7 @@ class ViewControllerLeakTests: QuickSpec {
         describe("LibrariesViewController") {
             describe("viewDidLoad") {
                 let vc = LeakTest {
-                    return container.resolveViewController(LibrariesViewController.self)
+                    return Current.storyboards.createViewController(LibrariesViewController.self)
                 }
                 it("must not leak") {
                     expect(vc).toNot(leak())
@@ -40,13 +38,28 @@ class ViewControllerLeakTests: QuickSpec {
         }
 
         describe("FeedViewController") {
+            var getSelectedSource = Current.settings.getSelectedSource
+            var getFeed = Current.feed.get
+
+            beforeEach {
+                getSelectedSource = Current.settings.getSelectedSource
+                Current.settings.getSelectedSource = {
+                    return RssSource(title: "Test", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
+                }
+                getFeed = Current.feed.get
+                Current.feed.get = { _, onCompletion in
+                    onCompletion(.success([]))
+                }
+            }
+
+            afterEach {
+                Current.settings.getSelectedSource = getSelectedSource
+                Current.feed.get = getFeed
+            }
+
             describe("viewDidLoad") {
                 let vc = LeakTest {
-                    let settings = container.resolve(SettingsService.self)!
-                    settings.selectedSource = RssSource(title: "Test", url: "https://blog.kulman.sk", rss: "https://blog.kulman.sk/index.xml", icon: nil)
-                    let dataService = container.resolve(DataService.self)! as! DataServiceMock
-                    dataService.result = .success([])
-                    return container.resolveViewController(FeedViewController.self)
+                    return Current.storyboards.createViewController(FeedViewController.self)
                 }
                 it("must not leak") {
                     expect(vc).toNot(leak())
@@ -68,7 +81,7 @@ class ViewControllerLeakTests: QuickSpec {
         describe("CustomSourceViewController") {
             describe("viewDidLoad") {
                 let vc = LeakTest {
-                    return container.resolveViewController(CustomSourceViewController.self)
+                    return Current.storyboards.createViewController(CustomSourceViewController.self)
                 }
                 it("must not leak") {
                     expect(vc).toNot(leak())
@@ -79,7 +92,7 @@ class ViewControllerLeakTests: QuickSpec {
         describe("SourceSelectionViewController") {
             describe("viewDidLoad") {
                 let vc = LeakTest {
-                    return container.resolveViewController(SourceSelectionViewController.self)
+                    return Current.storyboards.createViewController(SourceSelectionViewController.self)
                 }
                 it("must not leak") {
                     expect(vc).toNot(leak())

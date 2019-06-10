@@ -35,7 +35,8 @@ final class CustomSourceViewController: UIViewController, SetupStoryboardLodable
 
     // MARK: - Properties
 
-    var viewModel: CustomSourceViewModel!
+    private let viewModel = CustomSourceViewModel()
+
     weak var delegate: CustomSourceViewControllerDelegate?
 
     // MARK: - Fields

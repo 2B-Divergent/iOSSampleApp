@@ -25,11 +25,9 @@ final class SetupCoordinator: NavigationCoordinator {
     // MARK: - Properties
 
     let navigationController: UINavigationController
-    let container: Container
     weak var delegate: SetupCoordinatorDelegate?
 
-    init(container: Container, navigationController: UINavigationController) {
-        self.container = container
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 
@@ -46,7 +44,7 @@ final class SetupCoordinator: NavigationCoordinator {
      Shows the screen asking the user to select the RSS source
      */
     private func showSourceSelection() {
-        let vc = container.resolveViewController(SourceSelectionViewController.self)
+        let vc = Current.storyboards.createViewController(SourceSelectionViewController.self)
         vc.delegate = self
         navigationController.pushViewController(vc, animated: true)
     }
@@ -55,7 +53,7 @@ final class SetupCoordinator: NavigationCoordinator {
      Shows the user a screen to add a custom RSS source
      */
     private func showAddSourceForm() {
-        let vc = container.resolveViewController(CustomSourceViewController.self)
+        let vc = Current.storyboards.createViewController(CustomSourceViewController.self)
         vc.delegate = self
         navigationController.pushViewController(vc, animated: true)
     }

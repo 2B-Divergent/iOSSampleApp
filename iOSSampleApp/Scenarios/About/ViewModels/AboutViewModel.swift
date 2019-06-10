@@ -14,7 +14,7 @@ final class AboutViewModel {
     let appVersion: String
 
     init() {
-        appName = Bundle.main.appName
-        appVersion = "\(Bundle.main.appVersion) (\(Bundle.main.appBuild))"
+        appName = Current.version.appName
+        appVersion = "\(Current.version.appVersion) (\(Current.version.appBuild))"
     }
 }

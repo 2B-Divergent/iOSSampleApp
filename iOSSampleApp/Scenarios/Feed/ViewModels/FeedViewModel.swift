@@ -39,8 +39,8 @@ final class FeedViewModel {
 
     private var disposeBag = DisposeBag()
 
-    init(dataService: DataService, settingsService: SettingsService) {
-        guard let source = settingsService.selectedSource else {
+    init() {
+        guard let source = Current.settings.getSelectedSource() else {
             os_log("Source not selected, nothing to show in feed", log: OSLog.lifeCycle, type: .error)
             fatalError("Source not selected, nothing to show in feed")
         }
@@ -48,7 +48,7 @@ final class FeedViewModel {
         // converting callback based data service call to an observable
         // this observable can error out
         let loadFeed: Observable<[RssItem]> = Observable.create { observer in
-            dataService.getFeed(source: source) { result in
+            Current.feed.get(source) { result in
                 switch result {
                 case let .failure(error):
                     observer.onError(error)

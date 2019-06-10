@@ -29,7 +29,8 @@ final class SourceSelectionViewController: UIViewController, SetupStoryboardLoda
 
     // MARK: - Properties
 
-    var viewModel: SourceSelectionViewModel!
+    let viewModel = SourceSelectionViewModel()
+
     weak var delegate: SourceSelectionViewControllerDelegate?
 
     // MARK: - Fields

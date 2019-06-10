@@ -23,11 +23,9 @@ final class AboutCoordinator: NavigationCoordinator {
     // MARK: - Properties
 
     let navigationController: UINavigationController
-    let container: Container
     weak var delegate: AboutCoordinatorDelegate?
 
-    init(container: Container, navigationController: UINavigationController) {
-        self.container = container
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 
@@ -37,7 +35,7 @@ final class AboutCoordinator: NavigationCoordinator {
      Starts the Abotu flow by showing the basic info and additional menu items
      */
     func start() {
-        let vc = container.resolveViewController(AboutViewController.self)
+        let vc = Current.storyboards.createViewController(AboutViewController.self)
         vc.delegate = self
         navigationController.setBackButton()
         navigationController.pushViewController(vc, animated: true)
@@ -47,7 +45,7 @@ final class AboutCoordinator: NavigationCoordinator {
      Shows the list of open source libraries used by the app
      */
     private func showLibraries() {
-        let vc = container.resolveViewController(LibrariesViewController.self)
+        let vc = Current.storyboards.createViewController(LibrariesViewController.self)
         navigationController.pushViewController(vc, animated: true)
     }
 

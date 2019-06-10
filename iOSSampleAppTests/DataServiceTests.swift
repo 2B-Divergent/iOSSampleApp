@@ -14,11 +14,6 @@ import Quick
 class DataServiceTests: QuickSpec {
     override func spec() {
         describe("RSS data service") {
-            var service: RssDataService!
-            beforeEach {
-                service = RssDataService()
-            }
-
             context("given valid RSS feed") {
                 var source: RssSource!
                 beforeEach {
@@ -27,7 +22,7 @@ class DataServiceTests: QuickSpec {
 
                 it("succeeeds") {
                     waitUntil(timeout: 5) { done in
-                        service.getFeed(source: source) { result in
+                        Current.feed.get(source) { result in
                             expect(result).notTo(equal(.failure(RssError.badUrl)))
                             expect(result) == .success([])
                             done()
@@ -44,7 +39,7 @@ class DataServiceTests: QuickSpec {
 
                 it("fails") {
                     waitUntil(timeout: 5) { done in
-                        service.getFeed(source: source) { result in
+                        Current.feed.get(source) { result in
                             expect(result) == .failure(RssError.badUrl)
                             done()
                         }

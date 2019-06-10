@@ -37,7 +37,8 @@ final class FeedViewController: UIViewController, FeedStoryboardLodable, ToastCa
 
     // MARK: - Properties
 
-    var viewModel: FeedViewModel!
+    private let viewModel = FeedViewModel()
+
     weak var delegate: FeedViewControllerDelegeate?
 
     // MARK: - Fields

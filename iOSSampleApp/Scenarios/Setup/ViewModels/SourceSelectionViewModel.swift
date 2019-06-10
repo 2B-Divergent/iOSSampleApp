@@ -22,15 +22,12 @@ final class SourceSelectionViewModel {
     // MARK: - Fields
 
     private let allSources = BehaviorRelay<[RssSourceViewModel]>(value: [])
-    private let settingsService: SettingsService
     private var disposeBag = DisposeBag()
 
-    init(settingsService: SettingsService) {
-        self.settingsService = settingsService
-
+    init() {
         os_log("Loading bundled sources", log: OSLog.data, type: .debug)
 
-        let jsonData = Bundle.main.loadFile(filename: "sources.json")!
+        let jsonData = Current.appData.loadFile("sources.json")!
 
         let jsonDecoder = JSONDecoder()
         let all = (try! jsonDecoder.decode(Array<RssSource>.self, from: jsonData)).map({ RssSourceViewModel(source: $0) })
@@ -48,7 +45,7 @@ final class SourceSelectionViewModel {
         allSources.accept(all)
 
         // selecting again from feed
-        if let selected = settingsService.selectedSource {
+        if let selected = Current.settings.getSelectedSource() {
             if let index = allSources.value.firstIndex(where: { $0.source == selected }) { // pre-selecting the current source
                 allSources.value[index].isSelected.accept(true)
             } else { // using a custom source
@@ -83,7 +80,7 @@ final class SourceSelectionViewModel {
             return false
         }
 
-        settingsService.selectedSource = selected.source
+        Current.settings.setSelectedSource(selected.source)
         return true
     }
 }
